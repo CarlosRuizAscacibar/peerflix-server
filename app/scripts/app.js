@@ -16,6 +16,10 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+      .when('/stream/torrents/:infoHash/files/:path', {
+        templateUrl: 'views/stream.html',
+        controller: 'StreamCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

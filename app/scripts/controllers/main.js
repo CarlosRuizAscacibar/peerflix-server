@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('peerflixServerApp')
-  .controller('MainCtrl', function ($scope, $resource, $log, $q, $upload, torrentSocket) {
+  .controller('MainCtrl', function ($scope, $routeParams, $resource, $log, $q, $upload, torrentSocket) {
     var Torrent = $resource('/torrents/:infoHash');
 
     function load() {
