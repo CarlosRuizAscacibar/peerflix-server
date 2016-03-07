@@ -1,5 +1,7 @@
 'use strict';
 
+var stats = require('./stats');
+
 module.exports = function (server) {
   var io = require('socket.io').listen(server),
     _ = require('lodash'),
@@ -42,51 +44,42 @@ module.exports = function (server) {
   });
 
   store.on('torrent', function (infoHash, torrent) {
-    function stats() {
-      var swarm = torrent.swarm;
-      return {
-        peers: {
-          total: swarm.wires.length,
-          unchocked: swarm.wires.reduce(function (prev, wire) {
-            return prev + !wire.peerChoking;
-          }, 0)
-        },
-        traffic: {
-          down: swarm.downloaded,
-          up: swarm.uploaded
-        },
-        speed: {
-          down: swarm.downloadSpeed(),
-          up: swarm.uploadSpeed()
-        },
-        queue: swarm.queued,
-        paused: swarm.paused
-      };
-    }
-
     function listen() {
       var notifyProgress = _.throttle(function () {
-        if (torrent) {
-          io.sockets.emit('download', infoHash, progress(torrent.bitfield.buffer));
-        }
-      }, 1000);
+        io.sockets.emit('download', infoHash, progress(torrent.bitfield.buffer));
+      }, 1000, { trailing: false });
 
-      io.sockets.emit('verifying', infoHash, stats());
+      var notifySelection = _.throttle(function () {
+        var pieceLength = torrent.torrent.pieceLength;
+        io.sockets.emit('selection', infoHash, torrent.files.map(function (f) {
+          // jshint -W016
+          var start = f.offset / pieceLength | 0;
+          var end = (f.offset + f.length - 1) / pieceLength | 0;
+          return torrent.selection.some(function (s) {
+            return s.from <= start && s.to >= end;
+          });
+        }));
+      }, 2000, { trailing: false });
+
+      io.sockets.emit('verifying', infoHash, stats(torrent));
 
       torrent.once('ready', function () {
-        io.sockets.emit('ready', infoHash, stats());
+        io.sockets.emit('ready', infoHash, stats(torrent));
       });
 
       torrent.on('uninterested', function () {
         io.sockets.emit('uninterested', infoHash);
+        notifySelection();
       });
 
       torrent.on('interested', function () {
         io.sockets.emit('interested', infoHash);
+        notifySelection();
       });
 
       var interval = setInterval(function () {
-        io.sockets.emit('stats', infoHash, stats());
+        io.sockets.emit('stats', infoHash, stats(torrent));
+        notifySelection();
       }, 1000);
 
       torrent.on('verify', notifyProgress);
@@ -94,7 +87,6 @@ module.exports = function (server) {
       torrent.once('destroyed', function () {
         clearInterval(interval);
         io.sockets.emit('destroyed', infoHash);
-        torrent = null;
       });
     }
 

@@ -23,11 +23,10 @@
   </a>
   <p class="text-right">
     <i class="fa fa-upload"></i>
-    You can also
+    Drop .torrent files here or
     <span class="btn-link" ng-file-select ng-file-change="upload($files)">
-      upload .torrent files
+      browse to upload
     </span>
-    or drag & drop them here
   </p>
 </div>
 
@@ -55,7 +54,11 @@
         <li class="list-group-item" ng-repeat="file in torrent.files">
           <input type="checkbox" ng-model="file.selected" ng-click="select(torrent, file)"/>
           <span class="fa fa-cloud-download"></span>
+
           <a href="/#/stream/torrents/{{ torrent.infoHash }}/files/{{ file.path | encodeUri }}" >
+
+          <!-- <a ng-href="{{ file.link }}" target="_blank"> -->
+
             {{ file.name }} ({{ file.length / 1024 / 1024 | number:1 }} MB)
           </a>
         </li>

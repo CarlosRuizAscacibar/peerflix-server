@@ -1,7 +1,10 @@
 peerflix-server
 ===============
 
-[![Build Status](https://travis-ci.org/asapach/peerflix-server.svg?branch=master)](https://travis-ci.org/asapach/peerflix-server)
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Node.js Version][node-version-image]][node-version-url]
+[![Build Status][travis-image]][travis-url]
 
 <img src="https://cdn.rawgit.com/asapach/peerflix-server/master/app/images/logo.svg" alt="logo" height="256">
 
@@ -41,39 +44,26 @@ If you want to run peerflix-server as a daemon, you can do it using [forever](ht
 
 You might also want to enable logging -- see the [docs](https://github.com/nodejitsu/forever#using-forever-from-the-command-line).
 
+## Heroku
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 ## Development
 
-If you wish to build and run the code from source, here's what you'll need:
+See [Development.md](Development.md)
 
-### Prerequisites
+## REST API
 
-Install Grunt and Bower: `npm install -g grunt-cli bower`
+See [REST.md](REST.md)
 
-Install all local modules: `npm install`
+## Docker
 
-Install all external dependencies: `bower install`
+See [Docker.md](Docker.md)
 
-### Running development server
-
-`grunt serve`
-
-The task will first perform all required pre-processing, enable watch, live-reload, jshint and karma, and then open the browser.
-If you don't want any of this fancy stuff, you can just run `npm start`
-
-### Building production-ready application
-
-`grunt build`
-
-This task will optimize and minimize all the assets and prepare the code for deployment (e.g. to npm registry). You can run the production version locally by using `grunt serve:dist`
-
-### Unit tests
-
-`grunt test`
-
-This task will start Karma test runner and report the results.
-
-### JSHint
-
-`grunt jshint`
-
-This task will run code analysis and report the results.
+[npm-image]: https://img.shields.io/npm/v/peerflix-server.svg?style=flat
+[npm-url]: https://npmjs.org/package/peerflix-server
+[node-version-image]: https://img.shields.io/node/v/peerflix-server.svg?style=flat
+[node-version-url]: http://nodejs.org/download/
+[travis-image]: https://img.shields.io/travis/asapach/peerflix-server.svg?style=flat
+[travis-url]: https://travis-ci.org/asapach/peerflix-server
+[downloads-image]: https://img.shields.io/npm/dm/peerflix-server.svg?style=flat
+[downloads-url]: https://npmjs.org/package/peerflix-server
